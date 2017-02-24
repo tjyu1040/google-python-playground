@@ -1,5 +1,5 @@
-""" Various example implementations of a custom PTransform object. """
 # -*- coding: utf-8 -*-
+""" Various example implementations of a custom PTransform object. """
 from __future__ import division, print_function
 
 import logging

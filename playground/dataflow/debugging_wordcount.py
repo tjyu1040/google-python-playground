@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+""" Example of debugging a wordcount pipeline. """
 from __future__ import division, print_function
 
 import logging
