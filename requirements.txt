@@ -1,0 +1,2 @@
+google-cloud-bigtable==0.22.0
+psutil==5.1.3
