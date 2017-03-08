@@ -4,7 +4,7 @@ python:
 before_install:
   - .travis/install-google-cloud-sdk.sh
   - source $HOME/google-cloud-sdk/path.bash.inc
-  - which gcloud
+  - gcloud version
 script: pytest
 sudo: required
 notifications:
