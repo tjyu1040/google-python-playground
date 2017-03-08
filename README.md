@@ -1,2 +1,2 @@
-# google-cloud-python-playground
-Playground for Google Cloud Python API
+# google-python-playground
+Playground for Google Python API/Libraries
