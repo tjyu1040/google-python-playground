@@ -40,7 +40,7 @@ class EmulatorCredentials(object):
 class BigtableEmulator:
 
     def __init__(self):
-        self.emulator_pid = None
+        self._emulator_pid = None
 
     def start(self):
         """ Start the Bigtable emulator. """
@@ -54,16 +54,18 @@ class BigtableEmulator:
         emulator_ready = False
         while not emulator_ready:
             emulator_ready = process.stderr.readline().startswith(
-                BIGTABLE_READY_LINE_PREFIX)
+                BIGTABLE_READY_LINE_PREFIX
+            )
 
-        self.emulator_pid = process.pid
+        self._emulator_pid = process.pid
         # Initialize emulator host environment variables.
         BigtableEmulator.initialize_environment()
 
     def finish(self):
         """ Stop the Bigtable emulator and clean up resources. """
-        if self.emulator_pid:
-            cleanup(self.emulator_pid)
+        if self._emulator_pid:
+            cleanup(self._emulator_pid)
+            self._emulator_pid = None
 
     @staticmethod
     def initialize_environment():
