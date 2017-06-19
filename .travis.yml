@@ -5,7 +5,12 @@ before_install:
   - .travis/install-google-cloud-sdk.sh
   - source $HOME/google-cloud-sdk/path.bash.inc
   - gcloud version
-script: pytest
+jobs:
+  include:
+    - script: pytest
+    - script:
+      - pip install flake8
+      - flake8 .
 sudo: required
 notifications:
   email: false
