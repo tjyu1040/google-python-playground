@@ -25,21 +25,19 @@ def run_trials(runs):
     """
     Run trials and returns results.
 
-    Parameters
-    ----------
-    runs : int
-        Number of trial runs to be executed.
+    Args:
+        runs (int): Number of trial runs to be executed.
 
-    Returns
-    -------
-    total_trials : int
-        The total number of trials.
-    inside_trials : int
-        The number of inside trials.
-    0
-        The final zero is needed solely to make sure that the combine_results
-        function has same type for inputs and outputs (a requirement for
-        combiner functions).
+    Returns:
+        tuple: tuple containing:
+
+            total_trials (int): The total number of trials.
+
+            inside_trials (int): The number of inside trials.
+
+            zero (int): The final zero is needed solely to make sure that the
+            combine_results function has same type for inputs and outputs
+            (a requirement for combiner functions).
     """
     inside_runs = 0
     for _ in range(runs):
@@ -55,19 +53,18 @@ def combine_results(results):
     """
     Combiner function to sum up trials and compute the estimate.
 
-    Parameters
-    ----------
-    results : iter
-        Iterable of 3-tuples (total trials, sum of inside trials, ignored)
+    Args:
+        results (iter): Iterable of 3-tuples (total trials, sum of inside
+            trials, ignored)
 
-    Returns
-    -------
-    sum_total_trials : int
-        The sum of total trials.
-    sum_inside_trials : int
-        The sum of inside trials.
-    probability : float
-        The probability computed from the two numbers
+    Returns:
+        tuple: tuple containing:
+
+            sum_total_trials (int): The sum of total trials.
+
+            sum_inside_trials (int): The sum of inside trials.
+
+            probability (float): The probability computed from the two numbers.
     """
     total, inside = sum(r[0] for r in results), sum(r[1] for r in results)
     return total, inside, 4 * float(inside) / total

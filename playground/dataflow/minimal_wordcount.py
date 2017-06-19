@@ -32,6 +32,7 @@ def run():
 
     pipeline.run().wait_until_finish()
 
+
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.INFO)
     run()

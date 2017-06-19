@@ -15,7 +15,11 @@ BIGTABLE_READY_LINE_PREFIX = '[bigtable] Cloud Bigtable emulator running on '
 
 
 def cleanup(pid):
-    """ Cleanup a process (including all of its children). """
+    """ Cleanup a process (including all of its children).
+
+    Args:
+        pid (str): The process ID to kill.
+    """
     try:
         proc = psutil.Process(pid)
         for child_proc in proc.children(recursive=True):
@@ -31,6 +35,7 @@ def cleanup(pid):
 
 
 class EmulatorCredentials(object):
+    """ Mock credentials used only for Bigtable emulator. """
 
     @staticmethod
     def create_scoped_required():
@@ -38,6 +43,7 @@ class EmulatorCredentials(object):
 
 
 class BigtableEmulator:
+    """ Emulator for interacting with Bigtable. """
 
     def __init__(self):
         self.emulator_pid = None
@@ -81,17 +87,15 @@ class BigtableEmulator:
         """
         Get the client associated with the Bigtable emulator.
 
-        Parameters
-        ----------
-        project_id : str
-            Project ID to work with. Any arbitrary string will work.
-        read_only : bool
-            Indicates whether client should be read-only or not.
+        Args:
+            project_id (str): Project ID to work with. Any arbitrary string
+                will work.
+            read_only (:obj:`bool`, optional): Indicates whether client should
+                be read-only or not. Defaults to False.
 
-        Returns
-        -------
-        client : Client
-            Client initialized with emulator credentials.
+        Returns:
+            Client: Google Cloud Bigtable API client initialized with emulator
+                credentials. None if emulator is not running.
         """
         admin = not read_only
         client = Client(project=project_id, credentials=EmulatorCredentials(),
