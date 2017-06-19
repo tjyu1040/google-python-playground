@@ -17,23 +17,20 @@ def build_bigtable_client(project_id=None, credentials=None,
     """
     Build a Google Cloud Bigtable API client.
 
-    Parameters
-    ----------
-    project_id : str
-        The ID of the project owning the instances and tables.
-    credentials : object
-        Credentials object to pass into client. If None, attempt to determine
-        from environment.
-    service_key_file : str
-        Path to a JSON keyfile containing service account credentials. This is
-        recommended for production environments.
-    read_only : bool
-        Indicates if the client should be for reading only.
+    Args:
+        project_id (:obj:`str`, optional): The ID of the project owning the
+            instances and tables. Defaults to None.
+        credentials (:obj:`object`, optional): Credentials object to pass into
+            client. If None, attempt to determine from environment. Defaults to
+            None.
+        service_key_file (:obj:`str`, optional): Path to a JSON keyfile
+            containing service account credentials. This is recommended for
+            production environments. Defaults to None.
+        read_only (:obj:`bool`, optional): Indicates if the client should be
+            for reading only. Defaults to False.
 
-    Returns
-    -------
-    client : Client
-        Google Cloud Bigtable API client to work with.
+    Returns:
+        Client: Google Cloud Bigtable API client to work with.
     """
     admin = not read_only  # Cannot perform admin tasks if read-only.
     if service_key_file and os.path.isfile(service_key_file):
@@ -53,21 +50,18 @@ def build_row_filter(row_key_regex=None, column_families=None, columns=None):
     Build a row filter using a combination of row keys, column families, or
     columns to retrieve.
 
-    Parameters
-    ----------
-    row_key_regex : str
-        Regular expression for matching row keys.
-    column_families : iterable[str]
-        An iterable of column families to retrieve.
-    columns : iterable[str]
-        An iterable of column names or regular expressions for matching
-        columns.
+    Args:
+        row_key_regex (:obj:`str`, optional): Regular expression for matching
+            row keys. Defaults to None.
+        column_families (:obj:`iter` of :obj:`str`, optional): An iterable of
+            column families to retrieve. Defaults to None.
+        columns (:obj:`iter` of :obj:`str`, optional): An iterable of column
+            names or regular expressions for matching columns. Defaults to
+            None.
 
-    Returns
-    -------
-    row_filter : RowFilter
-        The built row filter from passed in parameters. If no parameters, None
-        is returned.
+    Returns:
+        RowFilter: The built row filter from passed in parameters. If no
+            parameters, None is returned.
     """
     if (row_key_regex is not None and
             not isinstance(row_key_regex, six.string_types)):
