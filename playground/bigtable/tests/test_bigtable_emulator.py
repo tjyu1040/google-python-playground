@@ -27,7 +27,9 @@ class TestBigtableEmulator(unittest.TestCase):
         self.assertIn('localhost', client.emulator_host)
 
     def test_create_table(self):
-        client = Client('project-id', admin=True, credentials=EmulatorCredentials())
+        client = Client(
+            'project-id', admin=True, credentials=EmulatorCredentials()
+        )
         instance = client.instance('instance-id')
         tables = [os.path.basename(t.name) for t in instance.list_tables()]
         self.assertNotIn('table-id', tables)
