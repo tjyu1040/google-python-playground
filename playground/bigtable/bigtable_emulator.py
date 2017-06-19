@@ -42,6 +42,13 @@ class BigtableEmulator:
     def __init__(self):
         self._emulator_pid = None
 
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.finish()
+
     def start(self):
         """ Start the Bigtable emulator. """
 
