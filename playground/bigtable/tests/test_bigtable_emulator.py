@@ -13,9 +13,18 @@ from playground.bigtable.bigtable_emulator import (
 
 class TestBigtableEmulator(unittest.TestCase):
 
+    def test_bigtable_emulator(self):
+        with BigtableEmulator() as emulator:
+            self.assertIsNotNone(emulator._emulator_pid)
+        self.assertIsNone(emulator._emulator_pid)
+
+
+class TestBigtableEmulatorOperations(unittest.TestCase):
+
+    emulator = BigtableEmulator()
+
     @classmethod
     def setUpClass(cls):
-        cls.emulator = BigtableEmulator()
         cls.emulator.start()
 
     @classmethod
