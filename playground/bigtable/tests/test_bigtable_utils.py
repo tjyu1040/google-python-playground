@@ -8,7 +8,22 @@ from google.cloud.bigtable.row_filters import (
     RowFilterUnion, RowKeyRegexFilter
 )
 
-from playground.bigtable.bigtable_utils import build_row_filter
+from playground.bigtable.bigtable_emulator import (
+    BigtableEmulator, EmulatorCredentials
+)
+from playground.bigtable.bigtable_utils import (
+    build_bigtable_client, build_row_filter
+)
+
+
+class TestBigtableUtils(unittest.TestCase):
+
+    def test_build_bigtable_client(self):
+        with BigtableEmulator():
+            credentials = EmulatorCredentials()
+            client = build_bigtable_client('project-id', credentials)
+            self.assertIn('project-id', client.project_name)
+            self.assertEqual(credentials, client.credentials)
 
 
 class TestRowFilterBuilder(unittest.TestCase):
