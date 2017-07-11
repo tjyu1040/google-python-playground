@@ -33,15 +33,11 @@ def build_bigtable_client(project_id=None, credentials=None,
         Client: Google Cloud Bigtable API client to work with.
     """
     admin = not read_only  # Cannot perform admin tasks if read-only.
+    kwargs = {'admin': admin, 'read_only': read_only}
     if service_key_file and os.path.isfile(service_key_file):
-        client = Client.from_service_account_json(
-            service_key_file, admin=admin, read_only=read_only
-        )
+        client = Client.from_service_account_json(service_key_file, **kwargs)
     else:
-        client = Client(
-            project=project_id, credentials=credentials, admin=admin,
-            read_only=read_only
-        )
+        client = Client(project=project_id, credentials=credentials, **kwargs)
     return client
 
 

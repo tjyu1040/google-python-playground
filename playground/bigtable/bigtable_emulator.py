@@ -14,26 +14,6 @@ EMULATOR_BASE_CMD = ['gcloud', 'beta', 'emulators', 'bigtable']
 BIGTABLE_READY_LINE_PREFIX = '[bigtable] Cloud Bigtable emulator running on '
 
 
-def cleanup(pid):
-    """ Cleanup a process (including all of its children).
-
-    Args:
-        pid (str): The process ID to kill.
-    """
-    try:
-        proc = psutil.Process(pid)
-        for child_proc in proc.children(recursive=True):
-            try:
-                child_proc.kill()
-                child_proc.terminate()
-            except psutil.NoSuchProcess:
-                pass
-        proc.terminate()
-        proc.kill()
-    except psutil.NoSuchProcess:
-        pass
-
-
 class EmulatorCredentials(object):
     """ Mock credentials used only for Bigtable emulator. """
 
@@ -42,7 +22,7 @@ class EmulatorCredentials(object):
         return False
 
 
-class BigtableEmulator:
+class BigtableEmulator(object):
     """ Emulator for interacting with Bigtable. """
 
     def __init__(self):
@@ -72,16 +52,17 @@ class BigtableEmulator:
 
         self._emulator_pid = process.pid
         # Initialize emulator host environment variables.
-        BigtableEmulator.initialize_environment()
+        BigtableEmulator._initialize_environment()
 
     def finish(self):
         """ Stop the Bigtable emulator and clean up resources. """
         if self._emulator_pid:
-            cleanup(self._emulator_pid)
+            self._cleanup(self._emulator_pid)
             self._emulator_pid = None
+            del os.environ[BIGTABLE_EMULATOR]
 
     @staticmethod
-    def initialize_environment():
+    def _initialize_environment():
         """ Initialize Bigtable emulator environment variables for testing. """
         process = subprocess.Popen(
             EMULATOR_BASE_CMD + ['env-init'],
@@ -90,6 +71,26 @@ class BigtableEmulator:
         stdout, stderr = process.communicate()
         emulator_host = stdout.split('=')[-1].strip()
         os.environ[BIGTABLE_EMULATOR] = emulator_host
+
+    @staticmethod
+    def _cleanup(pid):
+        """ Cleanup a process (including all of its children).
+
+        Args:
+            pid (str): The process ID to kill.
+        """
+        try:
+            proc = psutil.Process(pid)
+            for child_proc in proc.children(recursive=True):
+                try:
+                    child_proc.kill()
+                    child_proc.terminate()
+                except psutil.NoSuchProcess:
+                    pass
+            proc.terminate()
+            proc.kill()
+        except psutil.NoSuchProcess:
+            pass
 
     @staticmethod
     def get_client(project_id, read_only=False):
@@ -107,6 +108,8 @@ class BigtableEmulator:
                 credentials. None if emulator is not running.
         """
         admin = not read_only
-        client = Client(project=project_id, credentials=EmulatorCredentials(),
-                        admin=admin, read_only=read_only)
+        client = Client(
+            project=project_id, credentials=EmulatorCredentials(),
+            admin=admin, read_only=read_only
+        )
         return client if client.emulator_host is not None else None
