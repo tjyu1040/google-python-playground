@@ -7,7 +7,7 @@ import re
 
 import apache_beam as beam
 from apache_beam.io import ReadFromText, WriteToText
-from apache_beam.pvalue import SideOutputValue
+from apache_beam.pvalue import TaggedOutput
 
 
 class SplitLinesToWordsFn(beam.DoFn):
@@ -22,8 +22,8 @@ class SplitLinesToWordsFn(beam.DoFn):
     """
 
     # These tags will be used to tag the side outputs of this DoFn.
-    SIDE_OUTPUT_TAG_SHORT_WORDS = 'tag_short_words'
-    SIDE_OUTPUT_TAG_CHARACTER_COUNT = 'tag_character_count'
+    TAG_SHORT_WORDS = 'tag_short_words'
+    TAG_CHARACTER_COUNT = 'tag_character_count'
 
     def __init__(self):
         super(SplitLinesToWordsFn, self).__init__()
@@ -40,19 +40,16 @@ class SplitLinesToWordsFn(beam.DoFn):
           - Side outputs may have different types (count) or may share the same
             type (words) as with the main output.
         """
-        # Yield a count (integer) to the SIDE_OUTPUT_TAG_CHARACTER_COUNT tagged
-        # collection.
-        yield SideOutputValue(
-            self.SIDE_OUTPUT_TAG_CHARACTER_COUNT, len(element)
-        )
+        # Yield a count (integer) to the TAG_CHARACTER_COUNT tagged collection.
+        yield TaggedOutput(self.TAG_CHARACTER_COUNT, len(element))
 
         words = re.findall(r'[A-Za-z\']+', element)
 
         for word in words:
             if len(word) < 3:
-                # Yield word as a side output to the
-                # SIDE_OUTPUT_TAG_SHORT_WORDS tagged collection.
-                yield SideOutputValue(self.SIDE_OUTPUT_TAG_SHORT_WORDS, word)
+                # Yield word as a side output to the TAG_SHORT_WORDS tagged
+                # collection.
+                yield TaggedOutput(self.TAG_SHORT_WORDS, word)
             else:
                 # Yield word to add it to the main collection.
                 yield word
@@ -90,17 +87,15 @@ def run():
     # Split lines into several outputs.
     split_lines_result = (
         lines | beam.ParDo(SplitLinesToWordsFn()).with_outputs(
-            SplitLinesToWordsFn.SIDE_OUTPUT_TAG_SHORT_WORDS,
-            SplitLinesToWordsFn.SIDE_OUTPUT_TAG_CHARACTER_COUNT,
+            SplitLinesToWordsFn.TAG_SHORT_WORDS,
+            SplitLinesToWordsFn.TAG_CHARACTER_COUNT,
             main='words'
         )
     )
 
     # Multiple ways to access result.
     words, _, _ = split_lines_result
-    short_words = split_lines_result[
-        SplitLinesToWordsFn.SIDE_OUTPUT_TAG_SHORT_WORDS
-    ]
+    short_words = split_lines_result[SplitLinesToWordsFn.TAG_SHORT_WORDS]
     character_count = split_lines_result.tag_character_count
 
     # Write character count.

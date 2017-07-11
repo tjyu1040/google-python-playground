@@ -8,6 +8,7 @@ import re
 import apache_beam as beam
 from apache_beam.io import ReadFromText, WriteToText
 from apache_beam.metrics import Metrics
+from apache_beam.testing.util import assert_that, equal_to
 
 
 class FilterTextFn(beam.DoFn):
@@ -64,9 +65,7 @@ def run():
         | 'FilterText' >> beam.ParDo(FilterTextFn('Camelot|Excalibur'))
     )
 
-    beam.assert_that(
-        filtered_words, beam.equal_to([('Camelot', 33), ('Excalibur', 17)])
-    )
+    assert_that(filtered_words, equal_to([('Camelot', 33), ('Excalibur', 17)]))
 
     output = filtered_words | 'format' >> beam.Map(
         lambda (word, count): '{}: {}'.format(word, count)
