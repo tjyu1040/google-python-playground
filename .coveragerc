@@ -1,0 +1,5 @@
+[run]
+source = playground
+omit =
+    playground/_generated/*
+    **/tests/**
