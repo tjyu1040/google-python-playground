@@ -59,14 +59,9 @@ def build_row_filter(row_key_regex=None, column_families=None, columns=None):
         RowFilter: The built row filter from passed in parameters. If no
             parameters, None is returned.
     """
-    if (row_key_regex is not None and
-            not isinstance(row_key_regex, six.string_types)):
-        raise TypeError('row_key_regex must be a str or unicode type.')
-    if (column_families is not None and
-            not isinstance(column_families, collections.Sequence)):
-        raise TypeError('column_families must be an iterable.')
-    if columns is not None and not isinstance(columns, collections.Sequence):
-        raise TypeError('columns must be an iterable.')
+    _validate_str(row_key_regex, 'row_key_regex')
+    _validate_iterable(column_families, 'column_families')
+    _validate_iterable(columns, 'columns')
 
     filters = []
 
@@ -95,3 +90,13 @@ def build_row_filter(row_key_regex=None, column_families=None, columns=None):
         return filters[0]
     else:
         return RowFilterChain(filters=filters) if filters else None
+
+
+def _validate_str(obj, var_name=''):
+    if obj is not None and not isinstance(obj, six.string_types):
+        raise TypeError('{} must be a str or unicode type.'.format(var_name))
+
+
+def _validate_iterable(obj, var_name=''):
+    if obj is not None and not isinstance(obj, collections.Sequence):
+        raise TypeError('{} must be an iterable.'.format(var_name))
