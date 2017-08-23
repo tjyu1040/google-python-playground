@@ -4,4 +4,4 @@ engines:
     config:
       languages:
         python:
-          mass_threshold: 50
+          mass_threshold: 40
