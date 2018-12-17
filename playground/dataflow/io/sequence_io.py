@@ -28,7 +28,8 @@ class ReadFromSequence(beam.PTransform):
         Initializes ReadFromSequence class.
 
         Args:
-            file_pattern (str): The file pattern glob to search for sequence files.
+            file_pattern (str): The file pattern glob to search for sequence
+            files.
         """
         super(ReadFromSequence, self).__init__()
         self._source = SequenceSource(file_pattern)
@@ -87,8 +88,8 @@ class SequenceSource(FileBasedSource):
                     else:
                         break
             except ValueError:
-                msg = 'Skipping {!r}\n{}'.format(file_name, traceback.format_exc())
-                logger.warning(msg)
+                msg = 'Skipping {!r}\n{}'
+                logger.warning(msg.format(file_name, traceback.format_exc()))
 
     def to_runner_api_parameter(self, unused_context):
         super(SequenceSource, self).to_runner_api_parameter(unused_context)
@@ -102,5 +103,6 @@ class SequenceSink(FileBasedSink):
         SeqIO.write(value, file_handle, file_format)
 
     def write_encoded_record(self, file_handle, encoded_value):
-        # We use `write_record()` instead to avoid encoding SeqRecord objects here.
+        # We use `write_record()` instead to avoid encoding SeqRecord objects
+        # here.
         raise NotImplementedError
