@@ -1,5 +1,5 @@
 google-cloud==0.25.0
 google-cloud-dataflow==2.0.0
-protobuf==3.15.0
+protobuf==3.18.3
 psutil==5.6.6
 six==1.10.0
